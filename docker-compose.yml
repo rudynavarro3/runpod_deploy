@@ -1,0 +1,30 @@
+services:
+  model-trainer:
+    build: .
+    container_name: hf-model-trainer
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config
+      - ./results:/app/results
+      - ./models:/app/models
+    environment:
+      - HF_TOKEN=${HF_TOKEN}
+      - CUDA_VISIBLE_DEVICES=0
+      - TRANSFORMERS_CACHE=/app/models/.cache
+      - HF_HOME=/app/models/.cache
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: >
+      python train.py
+      --model_name microsoft/DialoGPT-small
+      --output_model_name ${HF_USERNAME}/my-finetuned-model
+      --epochs 3
+      --batch_size 2
+    stdin_open: true
+    tty: true
