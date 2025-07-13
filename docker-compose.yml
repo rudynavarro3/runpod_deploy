@@ -1,7 +1,9 @@
+version: '3.8' 
+
 services:
   model-trainer:
     build: .
-    container_name: hf-model-trainer
+    container_name: runpod_deploy
     volumes:
       - ./data:/app/data
       - ./config:/app/config

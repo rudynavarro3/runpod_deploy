@@ -7,7 +7,6 @@ Loads a model, fine-tunes it, and pushes back to Hugging Face Hub
 import os
 import argparse
 import logging
-from typing import Optional
 import torch
 from transformers import (
     AutoTokenizer, 

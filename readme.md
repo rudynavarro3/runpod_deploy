@@ -17,7 +17,7 @@ A complete containerized solution for fine-tuning Hugging Face models with GPU a
 
 ```bash
 # Clone or create your project directory
-mkdir hf-model-trainer && cd hf-model-trainer
+mkdir deploy_runpod && cd deploy_runpod
 
 # Run the setup script
 python setup.py --all
@@ -66,7 +66,7 @@ make build
 make run
 
 # Or run directly with custom parameters
-docker run --gpus all -v $(pwd):/workspace hf-model-trainer \
+docker run --gpus all -v $(pwd):/workspace deploy_runpod \
   python train.py \
   --model_name microsoft/DialoGPT-small \
   --output_model_name your-username/my-model \
@@ -87,10 +87,10 @@ docker run --gpus all -v $(pwd):/workspace hf-model-trainer \
 
 ```bash
 # Build image
-docker build -t your-username/hf-model-trainer .
+docker build -t your-username/deploy_runpod .
 
 # Push to registry
-docker push your-username/hf-model-trainer
+docker push your-username/deploy_runpod
 ```
 
 #### 2. Deploy to RunPod
@@ -99,7 +99,7 @@ docker push your-username/hf-model-trainer
 # Generate RunPod configuration
 python deploy_runpod.py \
   --api_key YOUR_RUNPOD_API_KEY \
-  --image_name your-username/hf-model-trainer \
+  --image_name your-username/deploy_runpod \
   --model_name microsoft/DialoGPT-small \
   --output_model_name your-username/my-finetuned-model \
   --hf_token YOUR_HF_TOKEN \
@@ -130,22 +130,22 @@ python deploy_runpod.py \
 ## Project Structure
 
 ```
-hf-model-trainer/
-├── train.py              # Main training script
-├── Dockerfile            # Docker configuration
-├── docker-compose.yml    # Local development
-├── requirements.txt      # Python dependencies
-├── deploy_runpod.py      # RunPod deployment
-├── setup.py             # Project setup script
-├── Makefile             # Common commands
-├── .env.template        # Environment template
-├── config/
-│   └── train_config.json # Training configuration
-├── data/
-│   └── sample_data.json  # Training data
-├── results/             # Training outputs
-├── models/              # Model cache
-└── scripts/             # Additional utilities
+deploy_runpod/
+├── train.py               # Main training script
+├── Dockerfile             # Docker configuration
+├── docker-compose.yml     # Local development
+├── requirements.txt       # Python dependencies
+├── deploy_runpod.py       # RunPod deployment
+├── setup.py               # Project setup script
+├── Makefile               # Common commands
+├── .env.template          # Environment template
+├── config/ 
+│   └── train_config.json  # Training configuration
+├── data/ 
+│   └── sample_data.json   # Training data
+├── results/               # Training outputs
+├── models/                # Model cache
+└── scripts/               # Additional utilities
 ```
 
 ## Training Script Usage
@@ -290,7 +290,7 @@ wandb.init(project="hf-finetuning")
 
 ```bash
 # Run container interactively
-docker run -it --gpus all hf-model-trainer bash
+docker run -it --gpus all deploy_runpod bash
 
 # Check GPU availability
 python -c "import torch; print(torch.cuda.is_available())"

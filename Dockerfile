@@ -1,5 +1,5 @@
 # Use NVIDIA CUDA base image with Python
-FROM nvidia/cuda:11.8-devel-ubuntu22.04
+FROM nvidia/cuda:11.8.0-devel-ubuntu22.04
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
@@ -33,8 +33,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY train.py .
 
 # Copy any additional files
-COPY config/ config/ 2>/dev/null || true
-COPY data/ data/ 2>/dev/null || true
+COPY config/ config/
+COPY data/ data/
 
 # Create directories for model output
 RUN mkdir -p /app/results /app/fine_tuned_model

@@ -181,6 +181,8 @@ tensorboard/
 # RunPod
 runpod_config.json
 runpod_setup.sh
+config/
+data/
 """
     
     with open(".gitignore", "w") as f:
@@ -208,7 +210,7 @@ setup:
 	python setup.py
 
 build:
-	docker build -t hf-model-trainer .
+	docker build -t runpod_deploy .
 
 run:
 	docker-compose up
@@ -234,7 +236,7 @@ dev-notebook:
 
 # Docker commands
 docker-shell:
-	docker run -it --rm --gpus all -v $(PWD):/app hf-model-trainer bash
+	docker run -it --rm --gpus all -v $(PWD):/app runpod_deploy bash
 
 docker-logs:
 	docker-compose logs -f model-trainer

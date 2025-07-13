@@ -14,8 +14,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class RunPodDeployer:
-    def __init__(self, api_key: str):
-        self.api_key = api_key
+    def __init__(self, api_key: str=None):
+        self.api_key = os.getenv("RUNPOD_API_KEY", api_key) 
         self.base_url = "https://api.runpod.io/graphql"
         
     def build_and_push_image(self, image_name: str, dockerfile_path: str = "."):
@@ -51,7 +51,7 @@ class RunPodDeployer:
         """Create RunPod configuration"""
         
         config = {
-            "name": "hf-model-trainer",
+            "name": "runpod_deploy",
             "imageName": image_name,
             "gpuTypeId": gpu_type,
             "containerDiskInGb": container_disk_size,
@@ -138,11 +138,11 @@ tail -f /dev/null
 
 def main():
     parser = argparse.ArgumentParser(description="Deploy to RunPod")
-    parser.add_argument("--api_key", required=True, help="RunPod API key")
+    parser.add_argument("--api_key", required=False, help="RunPod API key")
     parser.add_argument("--image_name", required=True, help="Docker image name")
     parser.add_argument("--model_name", required=True, help="Base model name")
     parser.add_argument("--output_model_name", required=True, help="Output model name")
-    parser.add_argument("--hf_token", required=True, help="Hugging Face token")
+    parser.add_argument("--hf_token", default=os.getenv("HUGGINGFACE_API_KEY"), required=False, help="Hugging Face token")
     parser.add_argument("--gpu_type", default="NVIDIA RTX A4000", help="GPU type")
     parser.add_argument("--build_image", action="store_true", help="Build and push image")
     
@@ -178,12 +178,6 @@ def main():
     logger.info("Files created:")
     logger.info("- runpod_setup.sh: Script to run in RunPod container")
     logger.info("- runpod_config.json: Configuration for RunPod deployment")
-    
-    print("\nNext steps:")
-    print("1. Upload your Docker image to a registry (Docker Hub, etc.)")
-    print("2. Create a RunPod pod with your image")
-    print("3. Use the generated runpod_setup.sh script in your pod")
-    print("4. Monitor the training progress in the RunPod logs")
 
 if __name__ == "__main__":
     main()
